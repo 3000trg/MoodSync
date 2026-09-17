@@ -72,17 +72,30 @@ class AuroraPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()..maskFilter = const MaskFilter.blur(BlurStyle.normal, 80);
+    if (colors.isEmpty) return;
+
+    final paint = Paint()..style = PaintingStyle.fill;
 
     for (int i = 0; i < 3; i++) {
-      final color = colors[i % colors.length].withValues(alpha: 0.4);
-      paint.color = color;
+      final color = colors[i % colors.length];
 
       final double x = size.width * (0.5 + 0.3 * sin(animationValue * 2 * pi + i));
       final double y = size.height * (0.5 + 0.3 * cos(animationValue * 2 * pi + i * 2));
-      final double radius = size.width * (0.4 + 0.1 * sin(animationValue * pi + i));
+      final double radius = size.width * (0.5 + 0.15 * sin(animationValue * pi + i));
 
-      canvas.drawCircle(Offset(x, y), radius, paint);
+      final center = Offset(x, y);
+      final rect = Rect.fromCircle(center: center, radius: radius);
+
+      paint.shader = RadialGradient(
+        colors: [
+          color.withValues(alpha: 0.45),
+          color.withValues(alpha: 0.18),
+          color.withValues(alpha: 0.0),
+        ],
+        stops: const [0.0, 0.55, 1.0],
+      ).createShader(rect);
+
+      canvas.drawCircle(center, radius, paint);
     }
   }
 

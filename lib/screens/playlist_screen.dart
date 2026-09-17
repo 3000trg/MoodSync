@@ -131,7 +131,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                 itemBuilder: (context, index) {
                   final song = playlist[index];
                   final isCurrent = moodProvider.currentSong == song;
-                  
+
                   // The first song stays bright, others dim temporarily
                   final shouldBeDimmed = _isDimmed && !isCurrent;
 
@@ -152,7 +152,7 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
                       child: item,
                     );
                   }
-                  
+
                   return FadeInUp(
                     duration: const Duration(milliseconds: 800),
                     delay: Duration(milliseconds: 100 * index),

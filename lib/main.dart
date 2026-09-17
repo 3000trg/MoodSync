@@ -1,3 +1,5 @@
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -6,15 +8,26 @@ import 'package:provider/provider.dart';
 import 'providers/mood_provider.dart';
 import 'screens/splash_screen.dart';
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     systemNavigationBarColor: Colors.transparent,
     systemNavigationBarIconBrightness: Brightness.light,
     statusBarIconBrightness: Brightness.light,
   ));
+
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
+
+  try {
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+  } catch (e) {
+    debugPrint("Firebase init warning: $e");
+  }
+
   runApp(const MoodSyncAppWithProvider());
 }
 
@@ -42,9 +55,9 @@ class MoodSyncApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         brightness: Brightness.dark,
-        scaffoldBackgroundColor: Colors.transparent, // Fix: Prevent black edge bleed
+        scaffoldBackgroundColor: const Color(0xFF0F172A),
         textTheme: GoogleFonts.plusJakartaSansTextTheme(
-          Theme.of(context).textTheme.apply(
+          ThemeData.dark().textTheme.apply(
                 bodyColor: Colors.white,
                 displayColor: Colors.white,
               ),

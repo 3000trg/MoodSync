@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "935065282040",
+    "project_id": "moodsync-c7048",
+    "storage_bucket": "moodsync-c7048.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:935065282040:android:e570352df983f46f19620d",
+        "android_client_info": {
+          "package_name": "com.terell.moodsync"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDa2YBBvH2Xcx5nk-l6nK1hFjs-gFOHuyY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
