@@ -135,7 +135,7 @@ class HomeTab extends StatelessWidget {
                   delay: Duration(milliseconds: 50 * index),
                   child: GestureDetector(
                     onTap: () {
-                      moodProvider.setMood(m['mood'] as Mood);
+                      moodProvider.updateMood(m['mood'] as Mood);
                       Navigator.of(context).push(MaterialPageRoute(builder: (_) => const PlaylistScreen()));
                     },
                     child: Container(
@@ -204,10 +204,13 @@ class HomeTab extends StatelessWidget {
             child: ListView.builder(
               scrollDirection: Axis.horizontal,
               padding: const EdgeInsets.symmetric(horizontal: 8),
-              itemCount: 5,
+              itemCount: MoodProvider.allLocalSongs.length < 6 ? MoodProvider.allLocalSongs.length : 6,
               itemBuilder: (context, index) {
-                return FadeInRight(
-                  delay: Duration(milliseconds: 100 * index),
+                final song = MoodProvider.allLocalSongs[index];
+                final moodProvider = Provider.of<MoodProvider>(context, listen: false);
+
+                return GestureDetector(
+                  onTap: () => moodProvider.playSong(song),
                   child: Container(
                     width: 160,
                     margin: const EdgeInsets.symmetric(horizontal: 8),
@@ -217,24 +220,31 @@ class HomeTab extends StatelessWidget {
                         ClipRRect(
                           borderRadius: BorderRadius.circular(12),
                           child: Image.network(
-                            'https://picsum.photos/seed/recent$index/300/300',
+                            song.coverUrl,
                             width: 160,
                             height: 160,
                             cacheWidth: 320,
                             fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) => Container(
+                              width: 160,
+                              height: 160,
+                              color: Colors.white10,
+                              child: const Icon(Icons.music_note, color: Colors.white38, size: 40),
+                            ),
                           ),
                         ),
                         const SizedBox(height: 8),
                         Text(
-                          'Mood Mix $index',
+                          song.title,
                           style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w600),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                         Text(
-                          'Personalized for you',
+                          song.artist,
                           style: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontSize: 12),
                           maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                         ),
                       ],
                     ),
@@ -261,11 +271,14 @@ class HomeTab extends StatelessWidget {
           sliver: SliverList(
             delegate: SliverChildBuilderDelegate(
               (context, index) {
-                return FadeInUp(
-                  delay: Duration(milliseconds: 100 * index),
+                final song = MoodProvider.allLocalSongs[(index + 6) % MoodProvider.allLocalSongs.length];
+                final moodProvider = Provider.of<MoodProvider>(context, listen: false);
+
+                return GestureDetector(
+                  onTap: () => moodProvider.playSong(song),
                   child: Container(
                     margin: const EdgeInsets.only(bottom: 16),
-                    height: 120,
+                    height: 100,
                     decoration: BoxDecoration(
                       color: Colors.white.withValues(alpha: 0.05),
                       borderRadius: BorderRadius.circular(16),
@@ -279,11 +292,17 @@ class HomeTab extends StatelessWidget {
                             bottomLeft: Radius.circular(16),
                           ),
                           child: Image.network(
-                            'https://picsum.photos/seed/made$index/200/200',
-                            width: 120,
-                            height: 120,
-                            cacheWidth: 240,
+                            song.coverUrl,
+                            width: 100,
+                            height: 100,
+                            cacheWidth: 200,
                             fit: BoxFit.cover,
+                            errorBuilder: (context, error, stackTrace) => Container(
+                              width: 100,
+                              height: 100,
+                              color: Colors.white10,
+                              child: const Icon(Icons.album_rounded, color: Colors.white38, size: 32),
+                            ),
                           ),
                         ),
                         const SizedBox(width: 16),
@@ -293,19 +312,23 @@ class HomeTab extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                'Exclusive Mix ${index + 1}',
-                                style: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w900),
+                                song.title,
+                                style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w900),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
                               const SizedBox(height: 4),
                               Text(
-                                'High Fidelity Audio • MoodSync',
+                                '${song.artist} • MoodSync',
                                 style: TextStyle(color: Colors.white.withValues(alpha: 0.5), fontSize: 13),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ],
                           ),
                         ),
                         const Padding(
-                          padding: EdgeInsets.only(right: 16.0),
+                          padding: EdgeInsets.symmetric(horizontal: 16.0),
                           child: Icon(Icons.play_circle_fill_rounded, color: Colors.white, size: 36),
                         ),
                       ],
@@ -313,7 +336,7 @@ class HomeTab extends StatelessWidget {
                   ),
                 );
               },
-              childCount: 3,
+              childCount: 5,
             ),
           ),
         ),
@@ -488,6 +511,25 @@ class MiniPlayer extends StatelessWidget {
   Widget _buildSpotifyLayout(Song? currentSong, MoodProvider moodProvider, Color moodColor) {
     return Row(
       children: [
+        if (currentSong != null) ...[
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: Image.network(
+              currentSong.coverUrl,
+              width: 42,
+              height: 42,
+              cacheWidth: 120,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stackTrace) => Container(
+                width: 42,
+                height: 42,
+                color: moodColor.withValues(alpha: 0.3),
+                child: const Icon(Icons.music_note_rounded, color: Colors.white54, size: 20),
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+        ],
         Expanded(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -509,7 +551,7 @@ class MiniPlayer extends StatelessWidget {
           ),
         ),
         IconButton(
-          onPressed: () {},
+          onPressed: () => moodProvider.previousSong(),
           icon: const Icon(Icons.skip_previous_rounded, color: Colors.white, size: 24),
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(),
@@ -549,7 +591,7 @@ class MiniPlayer extends StatelessWidget {
         ),
         const SizedBox(width: 12),
         IconButton(
-          onPressed: () {},
+          onPressed: () => moodProvider.nextSong(),
           icon: const Icon(Icons.skip_next_rounded, color: Colors.white, size: 24),
           padding: EdgeInsets.zero,
           constraints: const BoxConstraints(),

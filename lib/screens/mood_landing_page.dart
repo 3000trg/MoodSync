@@ -110,7 +110,7 @@ class MoodCard extends StatelessWidget {
     return GestureDetector(
       onTap: () {
         final moodProvider = Provider.of<MoodProvider>(context, listen: false);
-        moodProvider.setMood(mood);
+        moodProvider.startNewSession(mood);
         
         Navigator.of(context).push(
           PageRouteBuilder(

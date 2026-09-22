@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../widgets/aurora_background.dart';
-import 'login_screen.dart';
+import 'mood_landing_page.dart';
+import 'onboarding_screen.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -14,17 +16,30 @@ class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
     super.initState();
-    Future.delayed(const Duration(seconds: 3), () {
-      if (!mounted) return;
-      Navigator.of(context).pushReplacement(
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) => const LoginScreen(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(opacity: animation, child: child);
-          },
-        ),
-      );
-    });
+    _checkOnboardingStateAndNavigate();
+  }
+
+  Future<void> _checkOnboardingStateAndNavigate() async {
+    final prefs = await SharedPreferences.getInstance();
+    final bool hasCompletedOnboarding = prefs.getBool('hasCompletedOnboarding') ?? false;
+
+    // Minimum splash duration for branding display
+    await Future.delayed(const Duration(seconds: 3));
+
+    if (!mounted) return;
+
+    final Widget targetScreen = hasCompletedOnboarding
+        ? const MoodLandingPage()
+        : const OnboardingScreen();
+
+    Navigator.of(context).pushReplacement(
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => targetScreen,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          return FadeTransition(opacity: animation, child: child);
+        },
+      ),
+    );
   }
 
   @override

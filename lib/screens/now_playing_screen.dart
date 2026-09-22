@@ -11,6 +11,12 @@ class NowPlayingScreen extends StatelessWidget {
 
   const NowPlayingScreen({super.key, this.fromPlaylist = false});
 
+  String _formatDuration(Duration d) {
+    final minutes = d.inMinutes.remainder(60).toString().padLeft(1, '0');
+    final seconds = d.inSeconds.remainder(60).toString().padLeft(2, '0');
+    return '$minutes:$seconds';
+  }
+
   @override
   Widget build(BuildContext context) {
     final moodProvider = Provider.of<MoodProvider>(context);
@@ -134,33 +140,56 @@ class NowPlayingScreen extends StatelessWidget {
               // Progress Bar (Seeker)
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: Column(
-                  children: [
-                    SliderTheme(
-                      data: SliderTheme.of(context).copyWith(
-                        trackHeight: 4,
-                        thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
-                        overlayShape: const RoundSliderOverlayShape(overlayRadius: 14),
-                        activeTrackColor: moodColor,
-                        inactiveTrackColor: Colors.white10,
-                        thumbColor: Colors.white,
-                      ),
-                      child: Slider(
-                        value: 0.3,
-                        onChanged: (v) {},
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text("1:12", style: TextStyle(color: Colors.white38, fontSize: 12)),
-                          Text(song.duration, style: const TextStyle(color: Colors.white38, fontSize: 12)),
-                        ],
-                      ),
-                    ),
-                  ],
+                child: ValueListenableBuilder<Duration>(
+                  valueListenable: moodProvider.positionNotifier,
+                  builder: (context, currentPosition, child) {
+                    final durationMs = moodProvider.duration.inMilliseconds;
+                    final positionRatio = durationMs > 0
+                        ? (currentPosition.inMilliseconds / durationMs).clamp(0.0, 1.0)
+                        : 0.0;
+
+                    return Column(
+                      children: [
+                        SliderTheme(
+                          data: SliderTheme.of(context).copyWith(
+                            trackHeight: 4,
+                            thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 6),
+                            overlayShape: const RoundSliderOverlayShape(overlayRadius: 14),
+                            activeTrackColor: moodColor,
+                            inactiveTrackColor: Colors.white10,
+                            thumbColor: Colors.white,
+                          ),
+                          child: Slider(
+                            value: positionRatio,
+                            onChanged: (v) {
+                              if (durationMs > 0) {
+                                final seekMs = (v * durationMs).round();
+                                moodProvider.seek(Duration(milliseconds: seekMs));
+                              }
+                            },
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                _formatDuration(currentPosition),
+                                style: const TextStyle(color: Colors.white38, fontSize: 12),
+                              ),
+                              Text(
+                                durationMs > 0
+                                    ? _formatDuration(moodProvider.duration)
+                                    : song.duration,
+                                style: const TextStyle(color: Colors.white38, fontSize: 12),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
 
@@ -178,7 +207,7 @@ class NowPlayingScreen extends StatelessWidget {
                     ),
                     IconButton(
                       icon: const Icon(Icons.skip_previous_rounded, color: Colors.white, size: 48),
-                      onPressed: () {},
+                      onPressed: () => moodProvider.previousSong(),
                     ),
                     // Play/Pause
                     GestureDetector(
@@ -217,7 +246,7 @@ class NowPlayingScreen extends StatelessWidget {
                     ),
                     IconButton(
                       icon: const Icon(Icons.skip_next_rounded, color: Colors.white, size: 48),
-                      onPressed: () {},
+                      onPressed: () => moodProvider.nextSong(),
                     ),
                     IconButton(
                       icon: const Icon(Icons.repeat, color: Colors.white54, size: 24),

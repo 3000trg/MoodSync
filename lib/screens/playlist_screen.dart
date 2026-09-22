@@ -33,13 +33,14 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
       }
     });
 
-    // 3. After one full halo cycle (approx 3 seconds total from start), 
-    // remove the dimming to reveal the full list
+    // 3. After glow/halo cycle completes (3.8 seconds), reveal full list & play song!
     Future.delayed(const Duration(milliseconds: 3800), () {
       if (mounted) {
         setState(() {
           _isDimmed = false;
         });
+        final moodProvider = Provider.of<MoodProvider>(context, listen: false);
+        moodProvider.playCurrentSong();
       }
     });
 
@@ -125,40 +126,39 @@ class _PlaylistScreenState extends State<PlaylistScreen> {
             const SizedBox(height: 30),
             
             Expanded(
-              child: ListView.builder(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                itemCount: playlist.length,
-                itemBuilder: (context, index) {
-                  final song = playlist[index];
-                  final isCurrent = moodProvider.currentSong == song;
+              child: FadeInUp(
+                duration: const Duration(milliseconds: 600),
+                child: ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  itemCount: playlist.length,
+                  itemBuilder: (context, index) {
+                    final song = playlist[index];
+                    final isCurrent = moodProvider.currentSong == song;
 
-                  // The first song stays bright, others dim temporarily
-                  final shouldBeDimmed = _isDimmed && !isCurrent;
+                    // The first song stays bright, others dim temporarily
+                    final shouldBeDimmed = _isDimmed && !isCurrent;
 
-                  Widget item = _SongListItem(
-                    index: index + 1,
-                    song: song,
-                    isCurrent: isCurrent,
-                    isDimmed: shouldBeDimmed,
-                    moodColor: moodColor,
-                    onTap: () => moodProvider.playSong(song),
-                  );
-
-                  // Wrap the currently playing song with the Gemini halo
-                  if (isCurrent) {
-                    item = GeminiHaloWidget(
-                      color: moodColor,
-                      isActive: _showHalo,
-                      child: item,
+                    Widget item = _SongListItem(
+                      index: index + 1,
+                      song: song,
+                      isCurrent: isCurrent,
+                      isDimmed: shouldBeDimmed,
+                      moodColor: moodColor,
+                      onTap: () => moodProvider.playSong(song),
                     );
-                  }
 
-                  return FadeInUp(
-                    duration: const Duration(milliseconds: 800),
-                    delay: Duration(milliseconds: 100 * index),
-                    child: item,
-                  );
-                },
+                    // Wrap the currently playing song with the Gemini halo
+                    if (isCurrent) {
+                      item = GeminiHaloWidget(
+                        color: moodColor,
+                        isActive: _showHalo,
+                        child: item,
+                      );
+                    }
+
+                    return item;
+                  },
+                ),
               ),
             ),
             
@@ -207,11 +207,11 @@ class _SongListItem extends StatelessWidget {
         opacity: isDimmed ? 0.3 : 1.0,
         child: Container(
           margin: const EdgeInsets.only(bottom: 12),
-          padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+          padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(16),
             color: isCurrent 
-                ? moodColor.withValues(alpha: 0.1) 
+                ? moodColor.withValues(alpha: 0.12) 
                 : Colors.white.withValues(alpha: 0.05),
             border: null,
           ),
@@ -228,18 +228,7 @@ class _SongListItem extends StatelessWidget {
                   ),
                 ),
               ),
-              const SizedBox(width: 8),
-              ClipRRect(
-                borderRadius: BorderRadius.circular(8),
-                child: Image.network(
-                  song.coverUrl,
-                  width: 48,
-                  height: 48,
-                  cacheWidth: 150,
-                  fit: BoxFit.cover,
-                ),
-              ),
-              const SizedBox(width: 16),
+              const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -267,22 +256,12 @@ class _SongListItem extends StatelessWidget {
                   ],
                 ),
               ),
-              const SizedBox(width: 8),
-              Text(
-                song.album,
-                style: TextStyle(
-                  color: Colors.white.withValues(alpha: 0.4),
-                  fontSize: 12,
-                ),
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-              ),
-              const SizedBox(width: 16),
-              if (isCurrent)
-                Icon(Icons.check_circle, color: moodColor, size: 18)
-              else
-                const SizedBox(width: 18),
               const SizedBox(width: 12),
+              if (isCurrent)
+                Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: Icon(Icons.check_circle, color: moodColor, size: 18),
+                ),
               Text(
                 song.duration,
                 style: TextStyle(

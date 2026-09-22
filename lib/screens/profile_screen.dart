@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:animate_do/animate_do.dart';
+import 'login_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -98,12 +99,21 @@ class ProfileScreen extends StatelessWidget {
                     color: Colors.white.withValues(alpha: 0.05),
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: const Column(
+                  child: Column(
                     children: [
-                      _CompactProfileRow(icon: Icons.history, title: 'Listening History'),
-                      _CompactProfileRow(icon: Icons.notifications_none, title: 'Notifications'),
-                      _CompactProfileRow(icon: Icons.privacy_tip_outlined, title: 'Privacy & Security'),
-                      _CompactProfileRow(icon: Icons.logout, title: 'Sign Out', isDestructive: true),
+                      _CompactProfileRow(
+                        icon: Icons.account_circle_outlined,
+                        title: 'Log In / Create Account',
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(builder: (_) => const LoginScreen()),
+                          );
+                        },
+                      ),
+                      const _CompactProfileRow(icon: Icons.history, title: 'Listening History'),
+                      const _CompactProfileRow(icon: Icons.notifications_none, title: 'Notifications'),
+                      const _CompactProfileRow(icon: Icons.privacy_tip_outlined, title: 'Privacy & Security'),
+                      const _CompactProfileRow(icon: Icons.logout, title: 'Sign Out', isDestructive: true),
                     ],
                   ),
                 ),
@@ -164,11 +174,13 @@ class _CompactProfileRow extends StatelessWidget {
   final IconData icon;
   final String title;
   final bool isDestructive;
+  final VoidCallback? onTap;
 
   const _CompactProfileRow({
     required this.icon,
     required this.title,
     this.isDestructive = false,
+    this.onTap,
   });
 
   @override
@@ -184,7 +196,7 @@ class _CompactProfileRow extends StatelessWidget {
         ),
       ),
       trailing: isDestructive ? null : const Icon(Icons.chevron_right, color: Colors.white24, size: 18),
-      onTap: () {},
+      onTap: onTap,
     );
   }
 }
