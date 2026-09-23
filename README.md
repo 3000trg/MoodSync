@@ -39,19 +39,19 @@ This prevents users from accidentally progressing the emotional journey by repea
 
 ### Sad
 
-The Sad progression is designed to last approximately **5–7 meaningfully listened songs**.
+The Sad progression is designed to last approximately ***5–7 meaningfully listened songs***.
 
 The system gradually moves from more negative emotional characteristics toward a more neutral and comfortable range rather than immediately switching to highly positive music.
 
 ### Neutral
 
-The Neutral progression is designed to last approximately **6–8 meaningfully listened songs**.
+The Neutral progression is designed to last approximately ***6–8 meaningfully listened songs***.
 
 The system gradually explores more positive emotional characteristics while maintaining a natural transition.
 
 ### Happy
 
-Happy mode **does not have fixed progression endpoint**.
+Happy mode ***does not have fixed progression endpoint***.
 
 The system can continue recommending songs indefinitely while remaining within an appropriate positive emotional range.
 
