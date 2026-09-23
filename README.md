@@ -2,7 +2,7 @@
 
 Mood based music companion app
 
-🧠 Adaptive Mood Progression
+##🧠 Adaptive Mood Progression
 
 MoodSync uses an adaptive music progression system designed to create a gradual emotional journey based on the user's initial mood.
 
