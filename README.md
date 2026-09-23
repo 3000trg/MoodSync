@@ -21,7 +21,7 @@ These values allow MoodSync to compare songs based on their emotional characteri
 
 The recommendation system evaluates the valence and energy of available songs when selecting the next track.
 
-#### The general flow is:
+### The general flow is:
 
 Starting Mood → Emotional Position → Song Selection → 75% Completion → Progression → Next Song
 
@@ -37,19 +37,19 @@ This prevents users from accidentally progressing the emotional journey by repea
 
 ## 🌱 Mood Progression Profiles
 
-#### Sad
+### Sad
 
 The Sad progression is designed to last approximately 5–7 meaningfully listened songs.
 
 The system gradually moves from more negative emotional characteristics toward a more neutral and comfortable range rather than immediately switching to highly positive music.
 
-#### Neutral
+### Neutral
 
 The Neutral progression is designed to last approximately 6–8 meaningfully listened songs.
 
 The system gradually explores more positive emotional characteristics while maintaining a natural transition.
 
-#### Happy
+### Happy
 
 Happy mode does not have a fixed progression endpoint.
 
