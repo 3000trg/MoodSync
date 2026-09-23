@@ -1,4 +1,4 @@
-### moodsync
+# MoodSync
 
 Mood based music companion app
 
@@ -8,7 +8,7 @@ MoodSync uses an adaptive music progression system designed to create a gradual 
 
 Instead of repeatedly asking the user how they feel, MoodSync uses the initially selected mood as the starting point and silently adjusts music recommendations as the session progresses.
 
-🎵 Emotional Audio Model
+## 🎵 Emotional Audio Model
 
 Each song in the MoodSync library is assigned two emotional characteristics:
 
@@ -17,11 +17,11 @@ Each song in the MoodSync library is assigned two emotional characteristics:
 
 These values allow MoodSync to compare songs based on their emotional characteristics rather than relying only on predefined mood categories.
 
-🔄 Progressive Recommendation
+## 🔄 Progressive Recommendation
 
 The recommendation system evaluates the valence and energy of available songs when selecting the next track.
 
-The general flow is:
+### The general flow is:
 
 Starting Mood → Emotional Position → Song Selection → 75% Completion → Progression → Next Song
 
