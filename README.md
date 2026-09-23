@@ -29,7 +29,7 @@ As the session continues, the target emotional position gradually changes, allow
 
 ## 🎧 Listening Completion Threshold
 
-A song is considered meaningfully listened to only after *75% of its duration* has been played.
+A song is considered meaningfully listened to only after **75% of its duration** has been played.
 
 Simply starting a song or manually skipping it does not advance the progression.
 
