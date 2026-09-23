@@ -27,7 +27,7 @@ Starting Mood → Emotional Position → Song Selection → 75% Completion → P
 
 As the session continues, the target emotional position gradually changes, allowing the music to transition naturally rather than making sudden jumps between unrelated moods.
 
-🎧 Listening Completion Threshold
+## 🎧 Listening Completion Threshold
 
 A song is considered meaningfully listened to only after 75% of its duration has been played.
 
@@ -35,27 +35,27 @@ Simply starting a song or manually skipping it does not advance the progression.
 
 This prevents users from accidentally progressing the emotional journey by repeatedly skipping tracks.
 
-🌱 Mood Progression Profiles
+## 🌱 Mood Progression Profiles
 
-Sad
+### Sad
 
 The Sad progression is designed to last approximately 5–7 meaningfully listened songs.
 
 The system gradually moves from more negative emotional characteristics toward a more neutral and comfortable range rather than immediately switching to highly positive music.
 
-Neutral
+### Neutral
 
 The Neutral progression is designed to last approximately 6–8 meaningfully listened songs.
 
 The system gradually explores more positive emotional characteristics while maintaining a natural transition.
 
-Happy
+### Happy
 
 Happy mode does not have a fixed progression endpoint.
 
 The system can continue recommending songs indefinitely while remaining within an appropriate positive emotional range.
 
-🛡️ Emotional Jump Prevention
+## 🛡️ Emotional Jump Prevention
 
 MoodSync restricts large changes in valence and energy between consecutive recommendations.
 
@@ -65,7 +65,7 @@ Instead, the system searches for songs that provide a closer emotional transitio
 
 This creates a smoother progression between songs.
 
-🔀 Controlled Shuffle
+## 🔀 Controlled Shuffle
 
 MoodSync does not randomly shuffle the entire recommendation sequence.
 
@@ -73,7 +73,7 @@ Songs are selected according to their valence and energy characteristics.
 
 When multiple songs have the same valence and energy values, those songs may be shuffled between one another to introduce variety while maintaining the same emotional position.
 
-🎯 Session-Based Progression
+## 🎯 Session-Based Progression
 
 The user's mood is selected once at the beginning of a session.
 
@@ -83,7 +83,7 @@ There are no repeated mood check-ins or interruptions asking the user how they c
 
 The progression is intended to remain subtle and invisible, with the music itself creating the transition.
 
-🚧 Implementation Status
+## 🚧 Implementation Status
 
 Adaptive Mood Progression — In Development
 
