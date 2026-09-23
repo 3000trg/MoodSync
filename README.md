@@ -1,4 +1,4 @@
-# moodsync
+### moodsync
 
 Mood based music companion app
 
